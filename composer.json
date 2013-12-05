@@ -1,6 +1,5 @@
-
 {
-    "name": "payum/payum-laravel-bundle",
+    "name": "payum/payum-laravel-package",
     "type": "library",
     "description": "Rich payment solutions for Laravel framework. Paypal, payex, authorize.net, be2bill, omnipay, recurring paymens, instant notifications and many more",
     "keywords": [
