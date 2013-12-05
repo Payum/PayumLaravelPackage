@@ -3,7 +3,7 @@ namespace Payum\LaravelPackage;
 
 use Illuminate\Container;
 
-class ContainerAwareRegistry extends SimpleRegistry
+class Payum extends SimpleRegistry
 {
     /**
      * @var Container
@@ -16,6 +16,22 @@ class ContainerAwareRegistry extends SimpleRegistry
     public function setContainer(Container $container)
     {
         $this->container = $container;
+    }
+
+    /**
+     * @return \Payum\Core\Storage\StorageInterface
+     */
+    public function getTokenStorage()
+    {
+        return $this->container['payum.security.token_storage'];
+    }
+
+    /**
+     * @return \Payum\Core\Security\HttpRequestVerifierInterface
+     */
+    public function getHttpRequestVerifier()
+    {
+        return $this->container['payum.security.http_request_verifier'];
     }
 
     /**

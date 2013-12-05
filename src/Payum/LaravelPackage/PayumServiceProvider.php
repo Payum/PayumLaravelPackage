@@ -2,6 +2,7 @@
 namespace Payum\LaravelPackage;
 
 use Illuminate\Support\ServiceProvider;
+use Payum\LaravelPackage\Security\HttpRequestVerifier;
 
 class PayumServiceProvider extends ServiceProvider
 {
@@ -19,15 +20,15 @@ class PayumServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app['payum'] = $this->app->share(function($app) {
-            $registry = new ApplicationAwareRegistry(
+            $payum = new Payum(
                 $app['config']['payum/payum-laravel-package::payments'],
                 $app['config']['payum/payum-laravel-package::storages']
             );
 
-            $registry->setApplication($app);
-            $registry->registerStorageExtensions();
+            $payum->setApplication($app);
+            $payum->registerStorageExtensions();
 
-            return $registry;
+            return $payum;
         });
 
         $this->app['payum.security.token_storage'] = $this->app->share(function($app) {
@@ -37,6 +38,7 @@ class PayumServiceProvider extends ServiceProvider
         });
 
         $this->app['payum.security.http_request_verifier'] = $this->app->share(function($app) {
+            return new HttpRequestVerifier($app['payum.security.token_storage']);
         });
     }
 
