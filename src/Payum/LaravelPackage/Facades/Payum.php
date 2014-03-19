@@ -1,9 +1,9 @@
 <?php
-namespace Payum\LaravelPackage;
+namespace Payum\LaravelPackage\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class PayumFacade extends Facade
+class Payum extends Facade
 {
     /**
      * {@inheritDoc}
