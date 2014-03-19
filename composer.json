@@ -44,7 +44,7 @@
         "payum/omnipay-bridge": "If you want to use omnipay provided gateways"
     },
     "autoload": {
-        "psr-0": { "Payum\\LaravelBundle": "" }
+        "psr-0": { "Payum\\LaravelPackage": "" }
     },
     "extra": {
         "branch-alias": {
