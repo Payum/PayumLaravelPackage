@@ -25,7 +25,7 @@ class PayumServiceProvider extends ServiceProvider
                 $app['config']['payum/payum-laravel-package::storages']
             );
 
-            $payum->setApplication($app);
+            $payum->setContainer($app);
             $payum->registerStorageExtensions();
 
             return $payum;

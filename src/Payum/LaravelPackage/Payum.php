@@ -1,7 +1,7 @@
 <?php
 namespace Payum\LaravelPackage;
 
-use Illuminate\Container;
+use Illuminate\Container\Container;
 
 class Payum extends SimpleRegistry
 {
@@ -41,4 +41,4 @@ class Payum extends SimpleRegistry
     {
         return is_object($id) ? $id : $this->container[$id];
     }
-} 
+}
