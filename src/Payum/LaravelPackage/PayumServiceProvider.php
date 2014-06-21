@@ -29,17 +29,11 @@ class PayumServiceProvider extends ServiceProvider
             'as' => 'payum_notify_do_unsafe',
             'uses' => 'payum/payum::NotifyController@doUnsafe'
         ));
-    }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function register()
-    {
         $this->app['payum'] = $this->app->share(function($app) {
             $payum = new ContainerAwareRegistry(
-                $app['config']['payum/payum::payments'],
-                $app['config']['payum/payum::storages']
+                \Config::get('payum-laravel-package::payments'),
+                \Config::get('payum-laravel-package::storages')
             );
 
             $payum->setContainer($app);
@@ -48,7 +42,7 @@ class PayumServiceProvider extends ServiceProvider
         });
 
         $this->app['payum.security.token_storage'] = $this->app->share(function($app) {
-            $tokenStorage = $app['config']['payum/payum::token_storage'];
+            $tokenStorage = $app['config']['payum/payum-laravel-package::token_storage'];
 
             return is_object($tokenStorage) ? $tokenStorage : $app[$tokenStorage];
         });
@@ -66,6 +60,13 @@ class PayumServiceProvider extends ServiceProvider
         $this->app['payum.security.http_request_verifier'] = $this->app->share(function($app) {
             return new HttpRequestVerifier($app['payum.security.token_storage']);
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function register()
+    {
     }
 
     /**
