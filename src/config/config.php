@@ -8,7 +8,7 @@ return array(
     'token_storage' => new \Payum\Core\Storage\FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
     'payments' => array(
         // Put here any payment you want too, omnipay, payex, paypa, be2bill or any other. Here's example of paypal:
-        //'paypal' => \Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory::create(
+        //'paypal_es' => \Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory::create(
         //    new \Payum\Paypal\ExpressCheckout\Nvp\Api(new \Buzz\Client\Curl, array(
         //        'username' => 'REPLACE WITH YOURS',
         //        'password' => 'REPLACE WITH YOURS',
