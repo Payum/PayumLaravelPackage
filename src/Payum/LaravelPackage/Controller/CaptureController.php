@@ -1,26 +1,20 @@
 <?php
 namespace Payum\LaravelPackage\Controller;
 
-use Payum\Core\Request\BinaryMaskStatusRequest;
-use Payum\Core\Request\SecuredCaptureController;
+use Payum\Core\Request\SecuredCaptureRequest;
+use Symfony\Component\HttpFoundation\Request;
 
-class CaptureController extends BaseController
+class CaptureController extends PayumController
 {
-    public function doAction()
+    public function doAction(Request $request)
     {
-        $token = \Payum::getHttpRequestVerifier()->verify(null);
+        $token = $this->getHttpRequestVerifier()->verify($request);
 
-        $payment = \Payum::getPayment($token->getPaymentName());
-
-        $status = new BinaryMaskStatusRequest($token);
-        $payment->execute($status);
-        if (false == $status->isNew()) {
-            \App::abort(400, 'The model status must be new.');
-        }
+        $payment = $this->getPayum()->getPayment($token->getPaymentName());
 
         $payment->execute(new SecuredCaptureRequest($token));
 
-        \Payum::getHttpRequestVerifier()->invalidate($token);
+        $this->getHttpRequestVerifier()->invalidate($token);
 
         return \Redirect::to($token->getAfterUrl());
     }
