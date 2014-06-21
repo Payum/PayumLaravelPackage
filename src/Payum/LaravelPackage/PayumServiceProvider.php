@@ -13,7 +13,7 @@ class PayumServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('payum/payum');
+        $this->package('payum/payum-laravel-package');
 
         \Route::get('/payment/capture/{payum_token}', array(
             'as' => 'payum_capture_do',
