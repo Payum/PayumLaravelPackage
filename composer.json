@@ -7,6 +7,7 @@
         "paypal",
         "be2bill",
         "authorize.net",
+        "klarna",
         "omnipay",
         "paypal express checkout",
         "paypal pro checkout",
@@ -28,11 +29,14 @@
         },
         {
             "name":     "Community contributions",
-            "homepage": "https://github.com/Payum/Payum/contributors"
+            "homepage": "https://github.com/Payum/PayumLaravelPackage/contributors"
         }
     ],
     "require": {
         "php": ">=5.3.2",
+        "illuminate/container": "~4.0",
+        "illuminate/routing": "~4.0",
+        "illuminate/support": "~4.0",
         "payum/core": "0.9.*@dev"
     },
     "suggest": {
