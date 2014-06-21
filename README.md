@@ -4,8 +4,6 @@ The extension integrates [payum](http://payum.forma-dev.com/documentation#Payum)
 It already supports [+35 payments](http://payum.forma-dev.com/documentation/Core/supported-payments).
 Provide nice configuration layer, secured capture controller, storages and lots of other features.
 
-**The bundle is under heavy development.**
-
 ## Resources
 
 * [Documentation](http://payum.forma-dev.com/documentation#PayumLaravelBundle)
