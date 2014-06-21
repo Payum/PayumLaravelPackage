@@ -3,8 +3,8 @@ namespace Payum\LaravelPackage;
 
 use Illuminate\Support\ServiceProvider;
 use Payum\Core\Bridge\Symfony\Security\HttpRequestVerifier;
-use Payum\Core\Bridge\Symfony\Security\TokenFactory;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
+use Payum\LaravelPackage\Security\TokenFactory;
 
 class PayumServiceProvider extends ServiceProvider
 {
@@ -17,20 +17,22 @@ class PayumServiceProvider extends ServiceProvider
 
         \Route::get('/payment/capture/{payum_token}', array(
             'as' => 'payum_capture_do',
-            'uses' => 'payum/payum::CaptureController@do'
+            'uses' => 'Payum\LaravelPackage\Controller\CaptureController@doAction'
         ));
 
         \Route::get('/payment/notify/{payum_token}', array(
             'as' => 'payum_notify_do',
-            'uses' => 'payum/payum::NotifyController@do'
+            'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doAction'
         ));
 
         \Route::get('/payment/notify/unsafe/{payment_name}', array(
             'as' => 'payum_notify_do_unsafe',
-            'uses' => 'payum/payum::NotifyController@doUnsafe'
+            'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doUnsafeAction'
         ));
 
         $this->app['payum'] = $this->app->share(function($app) {
+            //TODO add exceptions if invalid payments and storages options set.
+
             $payum = new ContainerAwareRegistry(
                 \Config::get('payum-laravel-package::payments'),
                 \Config::get('payum-laravel-package::storages')
@@ -42,14 +44,15 @@ class PayumServiceProvider extends ServiceProvider
         });
 
         $this->app['payum.security.token_storage'] = $this->app->share(function($app) {
-            $tokenStorage = $app['config']['payum/payum-laravel-package::token_storage'];
+            //TODO add exceptions if invalid payments and storages options set.
+
+            $tokenStorage = \Config::get('payum-laravel-package::token_storage');
 
             return is_object($tokenStorage) ? $tokenStorage : $app[$tokenStorage];
         });
 
         $this->app['payum.security.token_factory'] = $this->app->share(function($app) {
             return new TokenFactory(
-                $app['router'],
                 $app['payum.security.token_storage'],
                 $app['payum'],
                 'payum_capture_do',

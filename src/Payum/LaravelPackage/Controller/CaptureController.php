@@ -6,8 +6,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CaptureController extends PayumController
 {
-    public function doAction(Request $request)
+    public function doAction($payum_token)
     {
+        /** @var Request $request */
+        $request = \App::make('request');
+        $request->attributes->set('payum_token', $payum_token);
+
         $token = $this->getHttpRequestVerifier()->verify($request);
 
         $payment = $this->getPayum()->getPayment($token->getPaymentName());
