@@ -21,6 +21,7 @@ class PayumServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->package('payum/payum-laravel-package');
+        \View::addNamespace('payum/payum', __DIR__.'/../../views');
 
         $this->app->error(function(InteractiveRequestInterface $interactiveRequest)
         {
@@ -46,7 +47,7 @@ class PayumServiceProvider extends ServiceProvider
             );
         });
 
-        \Route::get('/payment/capture/{payum_token}', array(
+        \Route::any('/payment/capture/{payum_token}', array(
             'as' => 'payum_capture_do',
             'uses' => 'Payum\LaravelPackage\Controller\CaptureController@doAction'
         ));
