@@ -2,9 +2,16 @@
 namespace Payum\LaravelPackage;
 
 use Illuminate\Support\ServiceProvider;
+use Payum\Core\Bridge\Symfony\Request\ResponseInteractiveRequest as SymfonyResponseInteractiveRequest;
 use Payum\Core\Bridge\Symfony\Security\HttpRequestVerifier;
+use Payum\Core\Exception\LogicException;
+use Payum\Core\Request\InteractiveRequestInterface;
+use Payum\Core\Request\RedirectUrlInteractiveRequest;
+use Payum\Core\Request\ResponseInteractiveRequest;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class PayumServiceProvider extends ServiceProvider
 {
@@ -14,6 +21,30 @@ class PayumServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->package('payum/payum-laravel-package');
+
+        $this->app->error(function(InteractiveRequestInterface $interactiveRequest)
+        {
+            $response = null;
+
+            if ($interactiveRequest instanceof SymfonyResponseInteractiveRequest) {
+                $response = $interactiveRequest->getResponse();
+            } elseif ($interactiveRequest instanceof ResponseInteractiveRequest) {
+                $response = new Response($interactiveRequest->getContent());
+            } elseif ($interactiveRequest instanceof RedirectUrlInteractiveRequest) {
+                $response = new RedirectResponse($interactiveRequest->getUrl());
+            }
+
+            if ($response) {
+                return $response;
+            }
+
+            $ro = new \ReflectionObject($interactiveRequest);
+            throw new LogicException(
+                sprintf('Cannot convert interactive request %s to symfony response.', $ro->getShortName()),
+                null,
+                $interactiveRequest
+            );
+        });
 
         \Route::get('/payment/capture/{payum_token}', array(
             'as' => 'payum_capture_do',
