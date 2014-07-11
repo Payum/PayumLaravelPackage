@@ -6,8 +6,8 @@ use Payum\Core\Bridge\Symfony\Request\ResponseInteractiveRequest as SymfonyRespo
 use Payum\Core\Bridge\Symfony\Security\HttpRequestVerifier;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\Request\InteractiveRequestInterface;
-use Payum\Core\Request\RedirectUrlInteractiveRequest;
-use Payum\Core\Request\ResponseInteractiveRequest;
+use Payum\Core\Request\Http\RedirectUrlInteractiveRequest;
+use Payum\Core\Request\Http\ResponseInteractiveRequest;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
