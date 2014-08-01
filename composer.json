@@ -14,7 +14,8 @@
         "recurring payment",
         "payex",
         "offline",
-        "instant notification"
+        "instant notification",
+        "stripe"
     ],
     "homepage": "http://payum.forma-dev.com",
     "license": "MIT",
@@ -37,7 +38,7 @@
         "illuminate/container": "~4.0",
         "illuminate/routing": "~4.0",
         "illuminate/support": "~4.0",
-        "payum/core": "0.10.*@dev"
+        "payum/core": "0.10.*"
     },
     "suggest": {
         "payum/paypal-express-checkout-nvp": "If you want to use paypal express checkout nvp gateway",
@@ -45,7 +46,8 @@
         "payum/authorize-net-aim": "If you want to use authorize.net gateway",
         "payum/be2bill": "If you want to use be2bill gateway",
         "payum/payex": "If you want to use payex gateway",
-        "payum/omnipay-bridge": "If you want to use omnipay provided gateways"
+        "payum/omnipay-bridge": "If you want to use omnipay provided gateways",
+        "payum/stripe": "If you want to use omnipay provided gateways"
     },
     "autoload": {
         "psr-0": { "Payum\\LaravelPackage": "src/" }
