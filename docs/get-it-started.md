@@ -25,7 +25,6 @@ Let's put some paypal config there:
 ```php
 // app/config/packages/payum/payum-laravel-package/config.php
 
-use Buzz\Client\Curl;
 use Payum\Core\Storage\FilesystemStorage;
 use Payum\Paypal\ExpressCheckout\Nvp\Api;
 use Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory as PaypalPaymentFactory;
@@ -33,7 +32,7 @@ use Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory as PaypalPaymentFactory;
 $detailsClass = 'Payum\Core\Model\ArrayObject';
 $tokenClass = 'Payum\Core\Model\Token';
 
-$paypalPayment = PaypalPaymentFactory::create(new Api(new Curl, array(
+$paypalPayment = PaypalPaymentFactory::create(new Api(array(
     'username' => $_SERVER['payum.paypal_express_checkout.username'],
     'password' => $_SERVER['payum.paypal_express_checkout.password'],
     'signature' => $_SERVER['payum.paypal_express_checkout.signature'],
@@ -71,9 +70,6 @@ class PaypalController extends BaseController
         $storage->updateModel($details);
 
         $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('paypal_es', $details, 'payment_done');
-        $details['RETURNURL'] = $captureToken->getTargetUrl();
-        $details['CANCELURL'] = $captureToken->getTargetUrl();
-        $storage->updateModel($details);
 
         return \Redirect::to($captureToken->getTargetUrl());
 	}
