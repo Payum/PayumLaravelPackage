@@ -6,8 +6,12 @@ Look at sandbox to find more examples.
 ## Installation
 
 ```bash
-php composer.phar require "payum/payum-laravel-package:*@stable" "payum/paypal-express-checkout-nvp:*@stable"
+php composer.phar require "payum/payum-laravel-package:*@stable" "payum/xxx:*@stable"
 ```
+
+_**Note**: Where payum/xxx is a payum package, for example it could be payum/paypal-express-checkout-nvp. Look at [supported payments](supported-payments.md) to find out what you can use._
+
+_**Note**: Use payum/payum if you want to install all payments at once._
 
 Now you have all codes prepared and ready to be used.
 
