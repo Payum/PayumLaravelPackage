@@ -1,7 +1,7 @@
 # Payum Laravel Bundle
 
 The extension integrates [payum](http://payum.forma-dev.com/documentation#Payum) into [laravel](http://laravel.com/) framework.
-It already supports [+35 payments](http://payum.org/doc/0.9/Core/supported-payments).
+It already supports [+35 payments](https://github.com/Payum/Core/blob/master/Resources/docs/supported-payments.md).
 Provide nice configuration layer, secured capture controller, storages and lots of other features.
 
 ## Resources
