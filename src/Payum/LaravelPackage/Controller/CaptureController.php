@@ -1,7 +1,7 @@
 <?php
 namespace Payum\LaravelPackage\Controller;
 
-use Payum\Core\Request\SecuredCaptureRequest;
+use Payum\Core\Request\SecuredCapture;
 use Symfony\Component\HttpFoundation\Request;
 
 class CaptureController extends PayumController
@@ -16,7 +16,7 @@ class CaptureController extends PayumController
 
         $payment = $this->getPayum()->getPayment($token->getPaymentName());
 
-        $payment->execute(new SecuredCaptureRequest($token));
+        $payment->execute(new SecuredCapture($token));
 
         $this->getHttpRequestVerifier()->invalidate($token);
 

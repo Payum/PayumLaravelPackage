@@ -2,12 +2,12 @@
 namespace Payum\LaravelPackage;
 
 use Illuminate\Support\ServiceProvider;
-use Payum\Core\Bridge\Symfony\Request\ResponseInteractiveRequest as SymfonyResponseInteractiveRequest;
+use Payum\Core\Bridge\Symfony\Reply\HttpResponse as SymfonyHttpResponse;
 use Payum\Core\Bridge\Symfony\Security\HttpRequestVerifier;
 use Payum\Core\Exception\LogicException;
-use Payum\Core\Request\InteractiveRequestInterface;
-use Payum\Core\Request\Http\RedirectUrlInteractiveRequest;
-use Payum\Core\Request\Http\ResponseInteractiveRequest;
+use Payum\Core\Reply\HttpRedirect;
+use Payum\Core\Reply\HttpResponse;
+use Payum\Core\Reply\ReplyInterface;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -23,27 +23,27 @@ class PayumServiceProvider extends ServiceProvider
         $this->package('payum/payum-laravel-package');
         \View::addNamespace('payum/payum', __DIR__.'/../../views');
 
-        $this->app->error(function(InteractiveRequestInterface $interactiveRequest)
+        $this->app->error(function(ReplyInterface $reply)
         {
             $response = null;
 
-            if ($interactiveRequest instanceof SymfonyResponseInteractiveRequest) {
-                $response = $interactiveRequest->getResponse();
-            } elseif ($interactiveRequest instanceof ResponseInteractiveRequest) {
-                $response = new Response($interactiveRequest->getContent());
-            } elseif ($interactiveRequest instanceof RedirectUrlInteractiveRequest) {
-                $response = new RedirectResponse($interactiveRequest->getUrl());
+            if ($reply instanceof SymfonyHttpResponse) {
+                $response = $reply->getResponse();
+            } elseif ($reply instanceof HttpResponse) {
+                $response = new Response($reply->getContent());
+            } elseif ($reply instanceof HttpRedirect) {
+                $response = new RedirectResponse($reply->getUrl());
             }
 
             if ($response) {
                 return $response;
             }
 
-            $ro = new \ReflectionObject($interactiveRequest);
+            $ro = new \ReflectionObject($reply);
             throw new LogicException(
-                sprintf('Cannot convert interactive request %s to symfony response.', $ro->getShortName()),
+                sprintf('Cannot convert reply %s to Laravel response.', $ro->getShortName()),
                 null,
-                $interactiveRequest
+                $reply
             );
         });
 
