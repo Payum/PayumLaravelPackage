@@ -47,6 +47,11 @@ class PayumServiceProvider extends ServiceProvider
             );
         });
 
+        \Route::any('/payment/authorize/{payum_token}', array(
+            'as' => 'payum_authorize_do',
+            'uses' => 'Payum\LaravelPackage\Controller\AuthorizeController@doAction'
+        ));
+
         \Route::any('/payment/capture/{payum_token}', array(
             'as' => 'payum_capture_do',
             'uses' => 'Payum\LaravelPackage\Controller\CaptureController@doAction'
@@ -88,7 +93,8 @@ class PayumServiceProvider extends ServiceProvider
                 $app['payum.security.token_storage'],
                 $app['payum'],
                 'payum_capture_do',
-                'payum_notify_do'
+                'payum_notify_do',
+                'payum_authorize_do'
             );
         });
 
