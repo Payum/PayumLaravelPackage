@@ -5,7 +5,7 @@ use Illuminate\Routing\Controllers\Controller;
 use Payum\Core\Registry\RegistryInterface;
 use Payum\Core\Security\HttpRequestVerifierInterface;
 
-abstract class PayumController extends Controller
+abstract class PayumController extends \Controller
 {
     /**
      * @return RegistryInterface
