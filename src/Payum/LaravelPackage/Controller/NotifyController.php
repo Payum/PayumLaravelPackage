@@ -2,7 +2,6 @@
 namespace Payum\LaravelPackage\Controller;
 
 use Payum\Core\Request\Notify;
-use Payum\Core\Request\SecuredNotify;
 use Symfony\Component\HttpFoundation\Request;
 
 class NotifyController extends PayumController
@@ -11,10 +10,7 @@ class NotifyController extends PayumController
     {
         $payment = $this->getPayum()->getPayment($request->get('payment_name'));
 
-        $payment->execute(new Notify(array_replace(
-            $request->query->all(),
-            $request->request->all()
-        )));
+        $payment->execute(new Notify(null));
 
         return \Response::make(null, 204);
     }
@@ -25,12 +21,8 @@ class NotifyController extends PayumController
 
         $payment = $this->getPayum()->getPayment($token->getPaymentName());
 
-        $payment->execute(new SecuredNotify(
-            array_replace($request->query->all(), $request->request->all()),
-            $token
-        ));
+        $payment->execute(new Notify($token));
 
         return \Response::make(null, 204);
     }
-
 }

@@ -27,7 +27,7 @@ class PaymentController extends BaseController
         $payment->execute($status = new GetHumanStatus($token));
 
         return \Response::json(array(
-            'status' => $status->getStatus(),
+            'status' => $status->getValue(),
             'details' => iterator_to_array($status->getModel())
         ));
     }
