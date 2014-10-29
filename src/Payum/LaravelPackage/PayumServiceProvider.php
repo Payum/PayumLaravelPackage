@@ -98,9 +98,9 @@ class PayumServiceProvider extends ServiceProvider
                 $app['payum.security.token_storage'],
                 $app['payum'],
                 'payum_capture_do',
-                'payum_refund_do',
                 'payum_notify_do',
-                'payum_authorize_do'
+                'payum_authorize_do',
+                'payum_refund_do'
             );
         });
 
