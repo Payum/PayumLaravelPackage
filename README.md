@@ -17,7 +17,7 @@ PayumLaravelPackage is an open source, community-driven project. Pull requests a
 
 ## Like it? Spread the world!
 
-Star payum yii extension yii extension on [github](https://github.com/Payum/PayumLaravelPackage) or [packagist](https://packagist.org/packages/payum/payum-laravel-bundle).
+Star it on [github](https://github.com/Payum/PayumLaravelPackage) or [packagist](https://packagist.org/packages/payum/payum-laravel-bundle).
 You may also drop a message on Twitter.
 
 ## License
