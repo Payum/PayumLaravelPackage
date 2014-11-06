@@ -20,6 +20,11 @@ class RefundController extends PayumController
 
         $this->getHttpRequestVerifier()->invalidate($token);
 
-        return \Redirect::to($token->getAfterUrl());
+        if($token->getAfterUrl()){
+            return \Redirect::to($token->getAfterUrl());
+        }
+
+        return \Response::make(null, 204);
+
     }
 }
