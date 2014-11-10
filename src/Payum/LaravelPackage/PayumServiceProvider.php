@@ -57,6 +57,11 @@ class PayumServiceProvider extends ServiceProvider
             'uses' => 'Payum\LaravelPackage\Controller\CaptureController@doAction'
         ));
 
+        \Route::any('/payment/refund/{payum_token}', array(
+            'as' => 'payum_refund_do',
+            'uses' => 'Payum\LaravelPackage\Controller\RefundController@doAction'
+        ));
+
         \Route::get('/payment/notify/{payum_token}', array(
             'as' => 'payum_notify_do',
             'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doAction'
@@ -94,7 +99,8 @@ class PayumServiceProvider extends ServiceProvider
                 $app['payum'],
                 'payum_capture_do',
                 'payum_notify_do',
-                'payum_authorize_do'
+                'payum_authorize_do',
+                'payum_refund_do'
             );
         });
 
