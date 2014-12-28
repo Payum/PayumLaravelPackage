@@ -38,7 +38,7 @@
         "illuminate/container": "~4.0",
         "illuminate/routing": "~4.0",
         "illuminate/support": "~4.0",
-        "payum/core": "0.13.*@dev"
+        "payum/core": "0.13.*"
     },
     "suggest": {
         "payum/paypal-express-checkout-nvp": "If you want to use paypal express checkout nvp gateway",
