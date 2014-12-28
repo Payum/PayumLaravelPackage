@@ -28,7 +28,7 @@ class PaymentController extends BaseController
 
         return \Response::json(array(
             'status' => $status->getValue(),
-            'details' => iterator_to_array($status->getModel())
+            'details' => iterator_to_array($status->getFirstModel())
         ));
     }
 

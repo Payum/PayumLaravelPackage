@@ -6,7 +6,7 @@ Look at sandbox to find more examples.
 ## Installation
 
 ```bash
-php composer.phar require "payum/payum-laravel-package:*@stable" "payum/xxx:*@stable"
+php composer.phar require payum/payum-laravel-package payum/xxx
 ```
 
 _**Note**: Where payum/xxx is a payum package, for example it could be payum/paypal-express-checkout-nvp. Look at [supported payments](https://github.com/Payum/Core/blob/master/Resources/docs/supported-payments.md) to find out what you can use._
@@ -30,23 +30,21 @@ Let's put some paypal config there:
 // app/config/packages/payum/payum-laravel-package/config.php
 
 use Payum\Core\Storage\FilesystemStorage;
-use Payum\Paypal\ExpressCheckout\Nvp\Api;
-use Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory as PaypalPaymentFactory;
 
 $detailsClass = 'Payum\Core\Model\ArrayObject';
 $tokenClass = 'Payum\Core\Model\Token';
 
-$paypalPayment = PaypalPaymentFactory::create(new Api(array(
-    'username' => $_SERVER['payum.paypal_express_checkout.username'],
-    'password' => $_SERVER['payum.paypal_express_checkout.password'],
-    'signature' => $_SERVER['payum.paypal_express_checkout.signature'],
-    'sandbox' => true
-)));
+$paypalExpressCheckoutPaymentFactory = new \Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory();
 
 return array(
     'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
     'payments' => array(
-        'paypal_es' => $paypalPayment,
+        'paypal_ec' => $paypalExpressCheckoutPaymentFactory->create(array(
+            'username' => 'EDIT ME',
+            'password' => 'EDIT ME',
+            'signature' => 'EDIT ME',
+            'sandbox' => true
+        )),
     ),
     'storages' => array(
         $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
@@ -68,12 +66,12 @@ class PaypalController extends BaseController
 	{
         $storage = \App::make('payum')->getStorage('Payum\Core\Model\ArrayObject');
 
-        $details = $storage->createModel();
+        $details = $storage->create();
         $details['PAYMENTREQUEST_0_CURRENCYCODE'] = 'EUR';
         $details['PAYMENTREQUEST_0_AMT'] = 1.23;
-        $storage->updateModel($details);
+        $storage->update($details);
 
-        $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('paypal_es', $details, 'payment_done');
+        $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('paypal_ec', $details, 'payment_done');
 
         return \Redirect::to($captureToken->getTargetUrl());
 	}
