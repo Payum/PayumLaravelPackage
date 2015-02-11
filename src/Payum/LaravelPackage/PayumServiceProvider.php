@@ -8,6 +8,7 @@ use Payum\Core\Exception\LogicException;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Reply\ReplyInterface;
+use Payum\Core\Security\GenericTokenFactory;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -94,13 +95,14 @@ class PayumServiceProvider extends ServiceProvider
         });
 
         $this->app['payum.security.token_factory'] = $this->app->share(function($app) {
-            return new TokenFactory(
-                $app['payum.security.token_storage'],
-                $app['payum'],
-                'payum_capture_do',
-                'payum_notify_do',
-                'payum_authorize_do',
-                'payum_refund_do'
+            return new GenericTokenFactory(
+                new TokenFactory($app['payum.security.token_storage'], $app['payum']),
+                array(
+                    'capture' => 'payum_capture_do',
+                    'notify' => 'payum_notify_do',
+                    'authorize' => 'payum_authorize_do',
+                    'refund' => 'payum_refund_do',
+                )
             );
         });
 

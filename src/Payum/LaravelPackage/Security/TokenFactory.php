@@ -1,9 +1,9 @@
 <?php
 namespace Payum\LaravelPackage\Security;
 
-use Payum\Core\Security\AbstractGenericTokenFactory;
+use Payum\Core\Security\AbstractTokenFactory;
 
-class TokenFactory extends AbstractGenericTokenFactory
+class TokenFactory extends AbstractTokenFactory
 {
     /**
      * {@inheritDoc}
