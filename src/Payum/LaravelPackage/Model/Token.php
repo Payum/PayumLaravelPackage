@@ -3,25 +3,32 @@ namespace Payum\LaravelPackage\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Payum\Core\Security\TokenInterface;
+use Payum\Core\Security\Util\Random;
 
-class Toke extends Model implements TokenInterface
+class Token extends Model implements TokenInterface
 {
+    /**
+     * @var string
+     */
     protected $table = 'payum_tokens';
 
     /**
-     * {@inheritDoc}
+     * @var string
      */
-    public function setDetails($details)
-    {
-        $this->setAttribute('details', json_encode($details));
-    }
+    protected $primaryKey = 'hash';
 
     /**
-     * {@inheritDoc}
+     * @var bool
      */
-    public function getDetails()
+    protected static $unguarded = true;
+
+    public function __construct(array $attributes = array())
     {
-        return json_decode($this->getAttribute('details') ?: '[]');
+        if (empty($attributes['hash'])) {
+            $attributes['hash'] = Random::generateToken();
+        }
+
+        parent::__construct($attributes);
     }
 
     /**
@@ -38,6 +45,22 @@ class Toke extends Model implements TokenInterface
     public function setHash($hash)
     {
         $this->setAttribute('hash', $hash);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDetails($details)
+    {
+        $this->setAttribute('details', serialize($details));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDetails()
+    {
+        return unserialize($this->getAttribute('details'));
     }
 
     /**

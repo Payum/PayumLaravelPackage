@@ -6,6 +6,9 @@ use Payum\Core\Model\OrderInterface;
 
 class Order extends Model implements  OrderInterface
 {
+    /**
+     * @var string
+     */
     protected $table = 'payum_orders';
 
     /**
@@ -13,7 +16,7 @@ class Order extends Model implements  OrderInterface
      */
     public function setDetails($details)
     {
-        $this->setAttribute('details', json_encode($details));
+        $this->setAttribute('details', json_encode($details ?: array()));
     }
 
     /**
@@ -21,7 +24,7 @@ class Order extends Model implements  OrderInterface
      */
     public function getDetails()
     {
-        return json_decode($this->getAttribute('details') ?: '[]', true);
+        return json_decode($this->getAttribute('details') ?: '{}', true);
     }
 
     /**

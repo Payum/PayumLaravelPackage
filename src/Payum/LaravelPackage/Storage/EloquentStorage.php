@@ -34,7 +34,7 @@ class EloquentStorage extends AbstractStorage
      */
     protected function doGetIdentity($model)
     {
-        return new Identity($model->id, $model);
+        return new Identity($model->{$model->getKeyName()}, $model);
     }
 
     /**
