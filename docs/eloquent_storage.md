@@ -8,7 +8,7 @@ Create an eloquent model:
 
 ```php
 <?php
-class Order
+class Order extends Illuminate\Database\Eloquent\Model
 {
     protected $table = 'orders';
 }
