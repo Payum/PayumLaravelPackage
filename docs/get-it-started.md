@@ -9,9 +9,9 @@ Look at sandbox to find more examples.
 php composer.phar require payum/payum-laravel-package payum/xxx
 ```
 
-_**Note**: Where payum/xxx is a payum package, for example it could be payum/paypal-express-checkout-nvp. Look at [supported payments](https://github.com/Payum/Core/blob/master/Resources/docs/supported-payments.md) to find out what you can use._
+_**Note**: Where payum/xxx is a payum package, for example it could be payum/paypal-express-checkout-nvp. Look at [supported gateways](https://github.com/Payum/Core/blob/master/Resources/docs/supported-gateways.md) to find out what you can use._
 
-_**Note**: Use payum/payum if you want to install all payments at once._
+_**Note**: Use payum/payum if you want to install all gateways at once._
 
 Now you have all codes prepared and ready to be used.
 
@@ -34,12 +34,12 @@ use Payum\Core\Storage\FilesystemStorage;
 $detailsClass = 'Payum\Core\Model\ArrayObject';
 $tokenClass = 'Payum\Core\Model\Token';
 
-$paypalExpressCheckoutPaymentFactory = new \Payum\Paypal\ExpressCheckout\Nvp\PaymentFactory();
+$paypalExpressCheckoutGatewayFactory = new \Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory();
 
 return array(
     'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'payments' => array(
-        'paypal_ec' => $paypalExpressCheckoutPaymentFactory->create(array(
+    'gateways' => array(
+        'paypal_ec' => $paypalExpressCheckoutGatewayFactory->create(array(
             'username' => 'EDIT ME',
             'password' => 'EDIT ME',
             'signature' => 'EDIT ME',

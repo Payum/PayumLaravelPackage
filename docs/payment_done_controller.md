@@ -22,9 +22,9 @@ class PaymentController extends BaseController
 
         $token = $this->getHttpRequestVerifier()->verify($request);
 
-        $payment = $this->getPayum()->getPayment($token->getPaymentName());
+        $gateway = $this->getPayum()->getGateway($token->getGatewayName());
 
-        $payment->execute($status = new GetHumanStatus($token));
+        $gateway->execute($status = new GetHumanStatus($token));
 
         return \Response::json(array(
             'status' => $status->getValue(),

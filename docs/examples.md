@@ -22,12 +22,12 @@ use Payum\Core\Storage\FilesystemStorage;
 $detailsClass = 'Payum\Core\Model\ArrayObject';
 $tokenClass = 'Payum\Core\Model\Token';
 
-$stripeJsPaymentFactory = new \Payum\Stripe\JsPaymentFactory();
+$stripeJsGatewayFactory = new \Payum\Stripe\StripeJsGatewayFactory();
 
 return array(
     'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'payments' => array(
-        'stripe_js' => $stripeJsPaymentFactory->create(array(
+    'gateways' => array(
+        'stripe_js' => $stripeJsGatewayFactory->create(array(
             'publishable_key' => $_SERVER['payum.stripe.publishable_key'],
             'secret_key' => $_SERVER['payum.stripe.secret_key'],
             'payum.action.get_http_request' => new GetHttpRequestAction(),
@@ -82,12 +82,12 @@ use Payum\Core\Storage\FilesystemStorage;
 $detailsClass = 'Payum\Core\Model\ArrayObject';
 $tokenClass = 'Payum\Core\Model\Token';
 
-$stripeCheckoutPaymentFactory = new \Payum\Stripe\CheckoutPaymentFactory();
+$stripeCheckoutGatewayFactory = new \Payum\Stripe\StripeCheckoutGatewayFactory();
 
 return array(
     'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'payments' => array(
-        'stripe_checkout' => $stripeCheckoutPaymentFactory->create(array(
+    'gateways' => array(
+        'stripe_checkout' => $stripeCheckoutGatewayFactory->create(array(
             'publishable_key' => 'EDIT ME',
             'secret_key' => 'EDIT ME',
             'payum.action.get_http_request' => new GetHttpRequestAction(),
@@ -142,12 +142,12 @@ use Payum\Core\Storage\FilesystemStorage;
 $detailsClass = 'Payum\Core\Model\ArrayObject';
 $tokenClass = 'Payum\Core\Model\Token';
 
-$omnipayDirectPaymentFactory = new \Payum\OmnipayBridge\DirectPaymentFactory();
+$omnipayDirectGatewayFactory = new \Payum\OmnipayBridge\OmnipayDirectGatewayFactory();
 
 return array(
     'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'payments' => array(
-        'stripe_direct' => $omnipayDirectPaymentFactory->create(array(
+    'gateways' => array(
+        'stripe_direct' => $omnipayDirectGatewayFactory->create(array(
             'type' => 'Stripe',
             'options' => array(
                 'apiKey' => 'EDIT ME',

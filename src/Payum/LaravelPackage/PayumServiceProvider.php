@@ -68,16 +68,16 @@ class PayumServiceProvider extends ServiceProvider
             'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doAction'
         ));
 
-        \Route::get('/payment/notify/unsafe/{payment_name}', array(
+        \Route::get('/payment/notify/unsafe/{gateway_name}', array(
             'as' => 'payum_notify_do_unsafe',
             'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doUnsafeAction'
         ));
 
         $this->app['payum'] = $this->app->share(function($app) {
-            //TODO add exceptions if invalid payments and storages options set.
+            //TODO add exceptions if invalid gateways and storages options set.
 
             $payum = new ContainerAwareRegistry(
-                \Config::get('payum-laravel-package::payments'),
+                \Config::get('payum-laravel-package::gateways'),
                 \Config::get('payum-laravel-package::storages')
             );
 
@@ -87,7 +87,7 @@ class PayumServiceProvider extends ServiceProvider
         });
 
         $this->app['payum.security.token_storage'] = $this->app->share(function($app) {
-            //TODO add exceptions if invalid payments and storages options set.
+            //TODO add exceptions if invalid gateways and storages options set.
 
             $tokenStorage = \Config::get('payum-laravel-package::token_storage');
 

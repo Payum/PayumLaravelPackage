@@ -8,9 +8,9 @@ Create an eloquent model:
 
 ```php
 <?php
-class Order extends Illuminate\Database\Eloquent\Model
+class Payment extends Illuminate\Database\Eloquent\Model
 {
-    protected $table = 'orders';
+    protected $table = 'payments';
 }
 ```
 
@@ -23,21 +23,21 @@ use Payum\LaravelPackage\Storage\EloquentStorage;
 
 return array(
     'storages' => array(
-        'Order' => new EloquentStorage('Order'),
+        'Payment' => new EloquentStorage('Payment'),
     )
 );
 ```
 
 ## Models 
 
-The package provides two models `Payum\LaravelPackage\Model\Token` and `Payum\LaravelPackage\Model\Order` which may be reused directly or extend with some custom logic.
+The package provides two models `Payum\LaravelPackage\Model\Token` and `Payum\LaravelPackage\Model\Payment` which may be reused directly or extend with some custom logic.
 Here's the models schemas:
 
 Order:
 ```php
 <?php
 
-\Schema::create('payum_orders', function($table) {
+\Schema::create('payum_payments', function($table) {
     /** @var \Illuminate\Database\Schema\Blueprint $table */
     $table->bigIncrements('id');
     $table->text('details');
@@ -47,7 +47,6 @@ Order:
     $table->string('clientEmail');
     $table->string('totalAmount');
     $table->string('currencyCode');
-    $table->string('currencyDigitsAfterDecimalPoint');
     $table->timestamps();
 });
 ```
@@ -64,7 +63,7 @@ Token:
     $table->text('details');
     $table->string('targetUrl');
     $table->string('afterUrl');
-    $table->string('paymentName');
+    $table->string('gatewayName');
     $table->timestamps();
 });
 ```

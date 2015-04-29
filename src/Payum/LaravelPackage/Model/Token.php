@@ -98,16 +98,16 @@ class Token extends Model implements TokenInterface
     /**
      * @return string
      */
-    public function getPaymentName()
+    public function getGatewayName()
     {
-        return $this->getAttribute('paymentName');
+        return $this->getAttribute('gatewayName');
     }
 
     /**
-     * @param string $paymentName
+     * @param string $gatewayName
      */
-    public function setPaymentName($paymentName)
+    public function setGatewayName($gatewayName)
     {
-        $this->setAttribute('paymentName', $paymentName);
+        $this->setAttribute('gatewayName', $gatewayName);
     }
 }

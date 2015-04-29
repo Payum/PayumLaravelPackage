@@ -2,14 +2,17 @@
 namespace Payum\LaravelPackage\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Payum\Core\Model\OrderInterface;
+use Payum\Core\Model\CreditCardInterface;
+use Payum\Core\Model\PaymentInterface;
 
-class Order extends Model implements  OrderInterface
+class Payment extends Model implements  PaymentInterface
 {
+    protected $creditCard;
+
     /**
      * @var string
      */
-    protected $table = 'payum_orders';
+    protected $table = 'payum_payments';
 
     /**
      * {@inheritDoc}
@@ -124,18 +127,18 @@ class Order extends Model implements  OrderInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @return mixed
      */
-    public function getCurrencyDigitsAfterDecimalPoint()
+    public function getCreditCard()
     {
-        return $this->getAttribute('currencyDigitsAfterDecimalPoint');
+        return $this->creditCard;
     }
 
     /**
-     * {@inheritDoc}
+     * @param CreditCardInterface $creditCard
      */
-    public function setCurrencyDigitsAfterDecimalPoint($currencyDigitsAfterDecimalPoint)
+    public function setCreditCard(CreditCardInterface $creditCard = null)
     {
-        $this->setAttribute('currencyDigitsAfterDecimalPoint', $currencyDigitsAfterDecimalPoint);
+        $this->creditCard = $creditCard;
     }
 }
