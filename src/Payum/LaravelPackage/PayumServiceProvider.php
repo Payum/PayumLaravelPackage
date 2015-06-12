@@ -21,32 +21,11 @@ class PayumServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('payum/payum-laravel-package');
-        \View::addNamespace('payum/payum', __DIR__.'/../../views');
+        $this->publishes([
+            __DIR__.'/../../config/config.php' => config_path('payum-laravel-package.php'),
+        ]);
 
-        $this->app->error(function(ReplyInterface $reply)
-        {
-            $response = null;
-
-            if ($reply instanceof SymfonyHttpResponse) {
-                $response = $reply->getResponse();
-            } elseif ($reply instanceof HttpResponse) {
-                $response = new Response($reply->getContent());
-            } elseif ($reply instanceof HttpRedirect) {
-                $response = new RedirectResponse($reply->getUrl());
-            }
-
-            if ($response) {
-                return $response;
-            }
-
-            $ro = new \ReflectionObject($reply);
-            throw new LogicException(
-                sprintf('Cannot convert reply %s to Laravel response.', $ro->getShortName()),
-                null,
-                $reply
-            );
-        });
+        $this->loadViewsFrom(__DIR__.'/../../views', 'payum/payum');
 
         \Route::any('/payment/authorize/{payum_token}', array(
             'as' => 'payum_authorize_do',
@@ -77,8 +56,8 @@ class PayumServiceProvider extends ServiceProvider
             //TODO add exceptions if invalid gateways and storages options set.
 
             $payum = new ContainerAwareRegistry(
-                \Config::get('payum-laravel-package::gateways'),
-                \Config::get('payum-laravel-package::storages')
+                \Config::get('payum-laravel-package.gateways'),
+                \Config::get('payum-laravel-package.storages')
             );
 
             $payum->setContainer($app);
@@ -89,7 +68,7 @@ class PayumServiceProvider extends ServiceProvider
         $this->app['payum.security.token_storage'] = $this->app->share(function($app) {
             //TODO add exceptions if invalid gateways and storages options set.
 
-            $tokenStorage = \Config::get('payum-laravel-package::token_storage');
+            $tokenStorage = \Config::get('payum-laravel-package.token_storage');
 
             return is_object($tokenStorage) ? $tokenStorage : $app[$tokenStorage];
         });
@@ -116,6 +95,9 @@ class PayumServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->mergeConfigFrom(
+            __DIR__.'/../../config/config.php', 'payum-laravel-package'
+        );
     }
 
     /**

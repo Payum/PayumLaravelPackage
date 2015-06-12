@@ -16,7 +16,10 @@ class AuthorizeController extends PayumController
 
         $gateway = $this->getPayum()->getGateway($token->getGatewayName());
 
-        $gateway->execute(new Authorize($token));
+        $response = $this->convertReply($gateway->execute(new Authorize($token), true));
+
+        if($response)
+            return $response;
 
         $this->getHttpRequestVerifier()->invalidate($token);
 
