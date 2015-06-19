@@ -18,8 +18,9 @@ class AuthorizeController extends PayumController
 
         $response = $this->convertReply($gateway->execute(new Authorize($token), true));
 
-        if($response)
+        if($response) {
             return $response;
+        }
 
         $this->getHttpRequestVerifier()->invalidate($token);
 

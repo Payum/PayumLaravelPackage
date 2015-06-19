@@ -19,8 +19,9 @@ class CaptureController extends PayumController
         
         $response = $this->convertReply($gateway->execute(new Capture($token), true));
 
-        if($response)
+        if($response) {
             return $response;
+        }
 
         $this->getHttpRequestVerifier()->invalidate($token);
 

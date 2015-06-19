@@ -25,8 +25,9 @@ class Laravel4 extends ServiceProvider
         \View::addNamespace('payum/payum', __DIR__.'/../../../views');
 
         // Throw reply exceptions unless the config is set not to for Laravel 4 only
-        if(\Config::get('payum-laravel-package::settings.throwReplyExceptions') == null)
+        if(\Config::get('payum-laravel-package::settings.throwReplyExceptions') == null) {
             \Config::set('payum-laravel-package::settings.throwReplyExceptions', true);
+        }
 
         $this->app->error(function(ReplyInterface $reply)
         {

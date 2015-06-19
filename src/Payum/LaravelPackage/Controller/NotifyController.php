@@ -26,8 +26,9 @@ class NotifyController extends PayumController
 
         $response = $this->convertReply($gateway->execute(new Notify($token), true));
 
-        if($response)
+        if($response) {
             return $response;
+        }
 
         return \Response::make(null, 204);
     }

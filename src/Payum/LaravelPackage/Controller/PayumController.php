@@ -32,11 +32,13 @@ abstract class PayumController extends Controller
 
     protected function convertReply($reply)
     {
-        if(!$reply instanceof ReplyInterface)
+        if(!$reply instanceof ReplyInterface) {
             return;
+        }
 
-        if($this->shouldThrowExceptions())
+        if($this->shouldThrowExceptions()) {
             throw $reply;
+        }
 
         $response = null;
 

@@ -18,8 +18,9 @@ class RefundController extends PayumController
 
         $response = $this->convertReply($gateway->execute(new Refund($token), true));
 
-        if($response)
+        if($response) {
             return $response;
+        }
 
         $this->getHttpRequestVerifier()->invalidate($token);
 
