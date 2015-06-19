@@ -30,10 +30,13 @@ abstract class PayumController extends Controller
         return \App::make('payum.security.http_request_verifier');
     }
 
-    public function convertReply($reply)
+    protected function convertReply($reply)
     {
         if(!$reply instanceof ReplyInterface)
             return;
+
+        if($this->shouldThrowExceptions())
+            throw $reply;
 
         $response = null;
 
@@ -54,5 +57,12 @@ abstract class PayumController extends Controller
             null,
             $reply
         );
+    }
+
+    protected function shouldThrowExceptions()
+    {
+        $l4Value = \Config::get('payum-laravel-package::settings.throwReplyExceptions');
+        $l5Value = \Config::get('payum-laravel-package.settings.throwReplyExceptions');
+        return $l4Value || $l5Value;
     }
 }
