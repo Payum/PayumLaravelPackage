@@ -10,7 +10,10 @@ class NotifyController extends PayumController
     {
         $gateway = $this->getPayum()->getGateway($request->get('gateway_name'));
 
-        $gateway->execute(new Notify(null));
+        $response = $this->convertReply($gateway->execute(new Notify(null), true));
+
+        if($response)
+            return $response;
 
         return \Response::make(null, 204);
     }
@@ -21,7 +24,11 @@ class NotifyController extends PayumController
 
         $gateway = $this->getPayum()->getGateway($token->getGatewayName());
 
-        $gateway->execute(new Notify($token));
+        $response = $this->convertReply($gateway->execute(new Notify($token), true));
+
+        if($response) {
+            return $response;
+        }
 
         return \Response::make(null, 204);
     }
