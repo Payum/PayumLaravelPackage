@@ -2,13 +2,13 @@
 namespace Payum\LaravelPackage\Controller;
 
 use Illuminate\Routing\Controller;
-use Payum\Core\Registry\RegistryInterface;
-use Payum\Core\Security\HttpRequestVerifierInterface;
-
+use Payum\Core\Bridge\Symfony\Reply\HttpResponse as SymfonyHttpResponse;
 use Payum\Core\Exception\LogicException;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Reply\ReplyInterface;
+use Payum\Core\Registry\RegistryInterface;
+use Payum\Core\Security\HttpRequestVerifierInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -47,7 +47,7 @@ abstract class PayumController extends Controller
         } elseif ($reply instanceof HttpRedirect) {
             $response = new RedirectResponse($reply->getUrl());
         } elseif ($reply instanceof HttpResponse) {
-            $response = new Response($reply->getContent());
+            $response = new Response($reply->getContent(), $reply->getStatusCode());
         } 
         if ($response) {
             return $response;

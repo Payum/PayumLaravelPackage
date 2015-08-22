@@ -9,7 +9,7 @@ Described in [Get it started](get-it-started.md)
 * Configuration
 
 ```bash
-$ php composer.phar require payum/stripe payum/payum-laravel-package
+$ php composer.phar require payum/payum-laravel-package stripe/stripe-php payum/stripe
 $ php artisan config:publish payum/payum-laravel-package
 ```
 
@@ -69,7 +69,7 @@ cclass StripeController extends BaseController
 * Configuration
 
 ```bash
-$ php composer.phar require payum/stripe payum/payum-laravel-package
+$ php composer.phar require payum/stripe payum/payum-laravel-package stripe/stripe-php
 $ php artisan config:publish payum/payum-laravel-package
 ```
 
@@ -129,7 +129,7 @@ cclass StripeController extends BaseController
 * Configuration
 
 ```bash
-$ php composer.phar require payum/omnipay-bridge payum/payum-laravel-package
+$ php composer.phar require payum/omnipay-bridge payum/payum-laravel-package omnipay/stripe
 $ php artisan config:publish payum/payum-laravel-package
 ```
 
