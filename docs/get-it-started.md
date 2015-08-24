@@ -27,6 +27,7 @@ If everything went well you have to have `config.php` in `app/config/packages/pa
 Let's put some paypal config there:
 
 ```php
+<?php
 // app/config/packages/payum/payum-laravel-package/config.php
 
 use Payum\Core\Storage\FilesystemStorage;
@@ -39,17 +40,31 @@ $paypalExpressCheckoutGatewayFactory = new \Payum\Paypal\ExpressCheckout\Nvp\Pay
 return array(
     'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
     'gateways' => array(
-        'paypal_ec' => $paypalExpressCheckoutGatewayFactory->create(array(
-            'username' => 'EDIT ME',
-            'password' => 'EDIT ME',
-            'signature' => 'EDIT ME',
-            'sandbox' => true
-        )),
+        'paypal_ec' => 'acme_payment.paypal_ec',
     ),
     'storages' => array(
         $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
     )
 );
+```
+
+## Gateway service
+
+Now we have to add a service definition for `acme_payment.paypal_ec`:
+
+```php
+<?php
+\App::bind('acme_payment.paypal_ec', function($app) {
+    /** @var \Payum\Core\Registry\RegistryInterface $payum */
+    $payum = $app['payum'];
+
+    return $payum->getGatewayFactory('paypal_express_checkout')->create([
+        'username' => 'EDIT ME',
+        'password' => 'EDIT ME',
+        'signature' => 'EDIT ME',
+        'sandbox' => true
+    ]);
+});
 ```
 
 ## Prepare payment

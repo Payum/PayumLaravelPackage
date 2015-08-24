@@ -2,7 +2,6 @@
 namespace Payum\LaravelPackage;
 
 use Illuminate\Container\Container;
-use Illuminate\Foundation\Application;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\CoreGatewayFactory as BaseCoreGatewayFactory;
 use Payum\Core\Gateway;
@@ -10,12 +9,12 @@ use Payum\Core\Gateway;
 class CoreGatewayFactory extends BaseCoreGatewayFactory
 {
     /**
-     * @var Application
+     * @var Container
      */
     private $container;
 
     /**
-     * @param Application $container
+     * @param Container $container
      */
     public function setContainer(Container $container)
     {
