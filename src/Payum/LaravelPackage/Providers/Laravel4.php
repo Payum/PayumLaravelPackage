@@ -5,12 +5,15 @@ use Illuminate\Support\ServiceProvider;
 use Payum\Core\Bridge\Symfony\Reply\HttpResponse as SymfonyHttpResponse;
 use Payum\Core\Bridge\Symfony\Security\HttpRequestVerifier;
 use Payum\Core\Exception\LogicException;
+use Payum\Core\Extension\StorageExtension;
 use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Reply\ReplyInterface;
 use Payum\Core\Security\GenericTokenFactory;
 use Payum\LaravelPackage\Action\GetHttpRequestAction;
 use Payum\LaravelPackage\Action\ObtainCreditCardAction;
+use Payum\LaravelPackage\CoreGatewayFactory;
+use Payum\LaravelPackage\GatewayFactoriesProvider;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -88,7 +91,11 @@ class Laravel4 extends ServiceProvider
 
             $payum = new ContainerAwareRegistry(
                 \Config::get('payum-laravel-package::gateways'),
-                \Config::get('payum-laravel-package::storages')
+                \Config::get('payum-laravel-package::storages'),
+                array_replace(
+                    $app['payum.gateway_factories_provider']->provide(),
+                    \Config::get('payum-laravel-package::factories') ?: []
+                )
             );
 
             $payum->setContainer($app);
@@ -114,6 +121,27 @@ class Laravel4 extends ServiceProvider
                     'refund' => 'payum_refund_do',
                 )
             );
+        });
+
+        $this->app['payum.gateway_factories_provider'] = $this->app->share(function($app) {
+            return new GatewayFactoriesProvider($app['payum.core_gateway']);
+        });
+
+        $this->app['payum.core_gateway'] = $this->app->share(function($app) {
+            $config = [
+                'payum.action.get_http_request' => 'payum.action.get_http_request',
+                'payum.action.obtain_credit_card' => 'payum.action.obtain_credit_card',
+            ];
+
+            $storagesConfig = \Config::get('payum-laravel-package::storages');
+            foreach ($storagesConfig as $modelClass => $storage) {
+                $config['payum.extension.'.$modelClass] = new StorageExtension(is_object($storage) ? $storage : $app[$storage]);
+            }
+
+            $factory = new CoreGatewayFactory($config);
+            $factory->setContainer($app);
+
+            return $factory;
         });
 
         $this->app['payum.action.get_http_request'] = $this->app->share(function($app) {

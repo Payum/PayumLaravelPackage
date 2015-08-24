@@ -2,9 +2,9 @@
 namespace Payum\LaravelPackage\Registry;
 
 use Illuminate\Container\Container;
-use Payum\Core\Registry\SimpleRegistry;
+use Payum\Core\Registry\AbstractRegistry;
 
-class ContainerAwareRegistry extends SimpleRegistry
+class ContainerAwareRegistry extends AbstractRegistry
 {
     /**
      * @var Container

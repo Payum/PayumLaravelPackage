@@ -11,6 +11,9 @@ return array(
     'gateways' => array(
         // Put here any gateway you want too, omnipay, payex, paypa, be2bill or any other. Here's example of paypal and stripe:
     ),
+    'factories' => array(
+        // Put here any gateway factories you want to use, or if you want to overwrite default one.
+    ),
     'storages' => array(
         $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
     )
