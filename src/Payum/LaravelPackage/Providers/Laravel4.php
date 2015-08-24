@@ -9,6 +9,8 @@ use Payum\Core\Reply\HttpRedirect;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Reply\ReplyInterface;
 use Payum\Core\Security\GenericTokenFactory;
+use Payum\LaravelPackage\Action\GetHttpRequestAction;
+use Payum\LaravelPackage\Action\ObtainCreditCardAction;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -21,8 +23,11 @@ class Laravel4 extends ServiceProvider
      */
     public function boot()
     {
-        $this->package('payum/payum-laravel-package', 'payum-laravel-package', __DIR__.'/../../../');
-        \View::addNamespace('payum/payum', __DIR__.'/../../../views');
+        $srcDir = realpath(__DIR__.'/../../../');
+
+
+        $this->package('payum/payum-laravel-package', 'payum-laravel-package', $srcDir);
+        \View::addNamespace('payum/payum', $srcDir.'/views');
 
         // Throw reply exceptions unless the config is set not to for Laravel 4 only
         if(\Config::get('payum-laravel-package::settings.throwReplyExceptions') == null) {
@@ -109,6 +114,14 @@ class Laravel4 extends ServiceProvider
                     'refund' => 'payum_refund_do',
                 )
             );
+        });
+
+        $this->app['payum.action.get_http_request'] = $this->app->share(function($app) {
+            return new GetHttpRequestAction();
+        });
+
+        $this->app['payum.action.obtain_credit_card'] = $this->app->share(function($app) {
+            return new ObtainCreditCardAction();
         });
 
         $this->app['payum.security.http_request_verifier'] = $this->app->share(function($app) {

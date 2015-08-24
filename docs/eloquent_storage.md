@@ -59,7 +59,7 @@ Token:
 
 \Schema::create('payum_tokens', function($table) {
     /** @var \Illuminate\Database\Schema\Blueprint $table */
-    $table->string('hash', 36)->primary();
+    $table->string('hash')->primary();
     $table->text('details');
     $table->string('targetUrl');
     $table->string('afterUrl');

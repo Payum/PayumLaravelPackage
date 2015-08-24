@@ -5,6 +5,8 @@ namespace Payum\LaravelPackage\Providers;
 use Illuminate\Support\ServiceProvider;
 use Payum\Core\Bridge\Symfony\Security\HttpRequestVerifier;
 use Payum\Core\Security\GenericTokenFactory;
+use Payum\LaravelPackage\Action\GetHttpRequestAction;
+use Payum\LaravelPackage\Action\ObtainCreditCardAction;
 use Payum\LaravelPackage\Registry\ContainerAwareRegistry;
 use Payum\LaravelPackage\Security\TokenFactory;
 
@@ -70,6 +72,14 @@ class Laravel5 extends ServiceProvider
                     'refund' => 'payum_refund_do',
                 )
             );
+        });
+
+        $this->app['payum.action.get_http_request'] = $this->app->share(function($app) {
+            return new GetHttpRequestAction();
+        });
+
+        $this->app['payum.action.obtain_credit_card'] = $this->app->share(function($app) {
+            return new ObtainCreditCardAction();
         });
 
         $this->app['payum.security.http_request_verifier'] = $this->app->share(function($app) {
