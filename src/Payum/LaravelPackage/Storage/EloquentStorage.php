@@ -2,6 +2,7 @@
 namespace Payum\LaravelPackage\Storage;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Payum\Core\Model\Identity;
 use Payum\Core\Storage\AbstractStorage;
 
@@ -58,6 +59,10 @@ class EloquentStorage extends AbstractStorage
     {
         $modelClass = $this->modelClass;
 
-        return $modelClass::all($criteria);
+        foreach ($criteria as $name => $value) {
+            $modelClass::where($name, '=', $value);
+        }
+
+        return iterator_to_array($modelClass::all());
     }
 }
