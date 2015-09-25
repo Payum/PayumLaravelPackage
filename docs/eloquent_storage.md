@@ -17,15 +17,15 @@ class Payment extends Illuminate\Database\Eloquent\Model
 Register a storage for it 
 
 ```php
-// app/config/packages/payum/payum-laravel-package/config.php
+// bootstrap/start.php
 
 use Payum\LaravelPackage\Storage\EloquentStorage;
 
-return array(
-    'storages' => array(
-        'Payment' => new EloquentStorage('Payment'),
-    )
-);
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->addStorage(Payment::class, new EloquentStorage(Payment::class))
+    ;
+});
 ```
 
 ## Models 
@@ -33,7 +33,10 @@ return array(
 The package provides two models `Payum\LaravelPackage\Model\Token` and `Payum\LaravelPackage\Model\Payment` which may be reused directly or extend with some custom logic.
 Here's the models schemas:
 
-Order:
+Payment:
+
+The database schema could be generated like this
+
 ```php
 <?php
 
@@ -51,8 +54,25 @@ Order:
 });
 ```
 
+The storage could be registered like this
+
+```php
+// bootstrap/start.php
+
+use Payum\LaravelPackage\Storage\EloquentStorage;
+use Payum\LaravelPackage\Model\Payment;
+
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->addStorage(Payment::class, new EloquentStorage(Payment::class))
+    ;
+});
+```
+
 
 Token:
+
+The database schema could be generated like this
 
 ```php
 <?php
@@ -65,6 +85,21 @@ Token:
     $table->string('afterUrl');
     $table->string('gatewayName');
     $table->timestamps();
+});
+```
+
+The token storage could be registered like this
+
+```php
+// bootstrap/start.php
+
+use Payum\LaravelPackage\Storage\EloquentStorage;
+use Payum\LaravelPackage\Model\Token;
+
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->setTokenStorage(new EloquentStorage(Token::class))
+    ;
 });
 ```
 

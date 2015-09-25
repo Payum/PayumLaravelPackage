@@ -10,24 +10,21 @@ class NotifyController extends PayumController
     {
         $gateway = $this->getPayum()->getGateway($request->get('gateway_name'));
 
-        $response = $this->convertReply($gateway->execute(new Notify(null), true));
-
-        if($response)
-            return $response;
+        $gateway->execute(new Notify(null));
 
         return \Response::make(null, 204);
     }
 
     public function doAction(Request $request)
     {
-        $token = $this->getHttpRequestVerifier()->verify($request);
+        $token = $this->getPayum()->getHttpRequestVerifier()->verify($request);
 
         $gateway = $this->getPayum()->getGateway($token->getGatewayName());
 
-        $response = $this->convertReply($gateway->execute(new Notify($token), true));
-
-        if($response) {
-            return $response;
+        try {
+            $gateway->execute(new Notify($token));
+        } catch (ReplyInterface $reply) {
+           return $this->convertReply($reply);
         }
 
         return \Response::make(null, 204);
