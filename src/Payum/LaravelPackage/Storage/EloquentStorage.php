@@ -57,12 +57,22 @@ class EloquentStorage extends AbstractStorage
      */
     public function findBy(array $criteria)
     {
-        $modelClass = $this->modelClass;
-
-        foreach ($criteria as $name => $value) {
-            $modelClass::where($name, '=', $value);
+        if (false == $criteria) {
+            return [];
         }
 
-        return iterator_to_array($modelClass::all());
+        $modelClass = $this->modelClass;
+
+        /** @var Builder $query */
+        $query = null;
+        foreach ($criteria as $name => $value) {
+            if (false == $query) {
+                $query = $modelClass::where($name, '=', $value);
+            }
+
+            $query->where($name, '=', $value);
+        }
+
+        return iterator_to_array($query->get());
     }
 }

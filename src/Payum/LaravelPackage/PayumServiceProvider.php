@@ -58,13 +58,13 @@ class PayumServiceProvider extends ServiceProvider
         $this->app->bind('payum.builder', function($app) {
             $builder = new PayumBuilder();
             $builder
-                ->setTokenFactoryBuilder(function(StorageInterface $tokenStorage, StorageRegistryInterface $registry) {
+                ->setTokenFactory(function(StorageInterface $tokenStorage, StorageRegistryInterface $registry) {
                     return new TokenFactory($tokenStorage, $registry);
                 })
-                ->setHttpRequestVerifierBuilder(function(StorageInterface $tokenStorage) {
+                ->setHttpRequestVerifier(function(StorageInterface $tokenStorage) {
                     return new HttpRequestVerifier($tokenStorage);
                 })
-                ->setCoreGatewayFactoryBuilder(function(array $defaultConfig) {
+                ->setCoreGatewayFactory(function(array $defaultConfig) {
                     $factory = new CoreGatewayFactory($defaultConfig);
                     $factory->setContainer($this->app);
 
