@@ -2,6 +2,7 @@
 namespace Payum\LaravelPackage\Storage;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Payum\Core\Model\Identity;
 use Payum\Core\Storage\AbstractStorage;
 
@@ -56,8 +57,22 @@ class EloquentStorage extends AbstractStorage
      */
     public function findBy(array $criteria)
     {
+        if (false == $criteria) {
+            return [];
+        }
+
         $modelClass = $this->modelClass;
 
-        return $modelClass::all($criteria);
+        /** @var Builder $query */
+        $query = null;
+        foreach ($criteria as $name => $value) {
+            if (false == $query) {
+                $query = $modelClass::where($name, '=', $value);
+            }
+
+            $query->where($name, '=', $value);
+        }
+
+        return iterator_to_array($query->get());
     }
 }

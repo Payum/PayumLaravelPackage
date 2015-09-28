@@ -17,53 +17,23 @@ Now you have all codes prepared and ready to be used.
 
 ## Configuration
 
-First publish the package configuration files:
-
-```bash
-$ php artisan config:publish payum/payum-laravel-package
-```
-
-If everything went well you have to have `config.php` in `app/config/packages/payum/payum-larvel-package` directory. 
-Let's put some paypal config there:
-
 ```php
-<?php
-// app/config/packages/payum/payum-laravel-package/config.php
+// bootstrap/start.php
 
-use Payum\Core\Storage\FilesystemStorage;
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        // this method registers filesystem storages, consider to change them to something more
+        // sophisticated, like eloquent storage
+        ->addDefaultStorages()
 
-$detailsClass = 'Payum\Core\Model\ArrayObject';
-$tokenClass = 'Payum\Core\Model\Token';
-
-$paypalExpressCheckoutGatewayFactory = new \Payum\Paypal\ExpressCheckout\Nvp\PaypalExpressCheckoutGatewayFactory();
-
-return array(
-    'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'gateways' => array(
-        'paypal_ec' => 'acme_payment.paypal_ec',
-    ),
-    'storages' => array(
-        $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
-    )
-);
-```
-
-## Gateway service
-
-Now we have to add a service definition for `acme_payment.paypal_ec`:
-
-```php
-<?php
-\App::bind('acme_payment.paypal_ec', function($app) {
-    /** @var \Payum\Core\Registry\RegistryInterface $payum */
-    $payum = $app['payum'];
-
-    return $payum->getGatewayFactory('paypal_express_checkout')->create([
-        'username' => 'EDIT ME',
-        'password' => 'EDIT ME',
-        'signature' => 'EDIT ME',
-        'sandbox' => true
-    ]);
+        ->addGateway('paypal_ec', [
+            'factory' => 'paypal_express_checkout',
+            'username' => 'EDIT ME',
+            'password' => 'EDIT ME',
+            'signature' => 'EDIT ME',
+            'sandbox' => true
+        ])
+    ;
 });
 ```
 
@@ -75,18 +45,20 @@ Lets create a controller where we prepare the payment details.
 <?php
 // app/controllers/PaypalController.php
 
-class PaypalController extends BaseController
+use Payum\LaravelPackage\Controller\PayumController;
+
+class PaypalController extends PayumController
 {
 	public function prepareExpressCheckout()
 	{
-        $storage = \App::make('payum')->getStorage('Payum\Core\Model\ArrayObject');
+        $storage = $this->getPayum()->getStorage('Payum\Core\Model\ArrayObject');
 
         $details = $storage->create();
         $details['PAYMENTREQUEST_0_CURRENCYCODE'] = 'EUR';
         $details['PAYMENTREQUEST_0_AMT'] = 1.23;
         $storage->update($details);
 
-        $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('paypal_ec', $details, 'payment_done');
+        $captureToken = $this->getPayum()->getTokenFactory()->createCaptureToken('paypal_ec', $details, 'payment_done');
 
         return \Redirect::to($captureToken->getTargetUrl());
 	}
@@ -94,7 +66,7 @@ class PaypalController extends BaseController
 ```
 
 Here's you may want to modify a `payment_done` route. 
-It is a controller where the a payer will be redirected after the payment is done, whenever it is success failed or pending. 
+It is a controller where the payer will be redirected after the payment is done, whenever it is success failed or pending.
 Read a [dedicated chapter](payment_done_controller.md) about how the payment done controller may look like.
 
 Back to [index](index.md).

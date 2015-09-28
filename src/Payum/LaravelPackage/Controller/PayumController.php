@@ -2,20 +2,15 @@
 namespace Payum\LaravelPackage\Controller;
 
 use Illuminate\Routing\Controller;
-use Payum\Core\Bridge\Symfony\Reply\HttpResponse as SymfonyHttpResponse;
-use Payum\Core\Exception\LogicException;
-use Payum\Core\Reply\HttpRedirect;
-use Payum\Core\Reply\HttpResponse;
+use Payum\Core\Bridge\Symfony\ReplyToSymfonyResponseConverter;
+use Payum\Core\Payum;
 use Payum\Core\Reply\ReplyInterface;
-use Payum\Core\Registry\RegistryInterface;
-use Payum\Core\Security\HttpRequestVerifierInterface;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 abstract class PayumController extends Controller
 {
     /**
-     * @return RegistryInterface
+     * @return Payum
      */
     protected function getPayum()
     {
@@ -23,48 +18,15 @@ abstract class PayumController extends Controller
     }
 
     /**
-     * @return HttpRequestVerifierInterface
+     * @param ReplyInterface $reply
+     *
+     * @return Response
      */
-    protected function getHttpRequestVerifier()
+    protected function convertReply(ReplyInterface $reply)
     {
-        return \App::make('payum.security.http_request_verifier');
-    }
+        /** @var ReplyToSymfonyResponseConverter $converter */
+        $converter = \App::make('payum.converter.reply_to_http_response');
 
-    protected function convertReply($reply)
-    {
-        if(!$reply instanceof ReplyInterface) {
-            return;
-        }
-
-        if($this->shouldThrowExceptions()) {
-            throw $reply;
-        }
-
-        $response = null;
-
-        if ($reply instanceof SymfonyHttpResponse) {
-            $response = $reply->getResponse();
-        } elseif ($reply instanceof HttpRedirect) {
-            $response = new RedirectResponse($reply->getUrl());
-        } elseif ($reply instanceof HttpResponse) {
-            $response = new Response($reply->getContent(), $reply->getStatusCode());
-        } 
-        if ($response) {
-            return $response;
-        }
-
-        $ro = new \ReflectionObject($reply);
-        throw new LogicException(
-            sprintf('Cannot convert reply %s to Laravel response.', $ro->getShortName()),
-            null,
-            $reply
-        );
-    }
-
-    protected function shouldThrowExceptions()
-    {
-        $l4Value = \Config::get('payum-laravel-package::settings.throwReplyExceptions');
-        $l5Value = \Config::get('payum-laravel-package.settings.throwReplyExceptions');
-        return $l4Value || $l5Value;
+        return $converter->convert($reply);
     }
 }

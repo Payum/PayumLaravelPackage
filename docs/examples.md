@@ -4,52 +4,94 @@
 
 Described in [Get it started](get-it-started.md)
 
-## Stripe.Js
+## Payment model
 
 * Configuration
 
 ```bash
-$ php composer.phar require payum/payum-laravel-package stripe/stripe-php payum/stripe
-$ php artisan config:publish payum/payum-laravel-package
+$ php composer.phar require payum/payum-laravel-package payum/offline
 ```
 
 ```php
-// app/config/packages/payum/payum-laravel-package/config.php
+// bootstrap/start.php
 
-use Payum\LaravelPackage\Action\GetHttpRequestAction;
-use Payum\Core\Storage\FilesystemStorage;
-
-$detailsClass = 'Payum\Core\Model\ArrayObject';
-$tokenClass = 'Payum\Core\Model\Token';
-
-$stripeJsGatewayFactory = new \Payum\Stripe\StripeJsGatewayFactory();
-
-return array(
-    'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'gateways' => array(
-        'stripe_js' => $stripeJsGatewayFactory->create(array(
-            'publishable_key' => $_SERVER['payum.stripe.publishable_key'],
-            'secret_key' => $_SERVER['payum.stripe.secret_key'],
-            'payum.action.get_http_request' => new GetHttpRequestAction(),
-        )),
-    ),
-    'storages' => array(
-        $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
-    )
-);
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->addGateway('offline', ['factory' => 'offline'])
+    ;
+});
 ```
 
 * Prepare payment
 
 ```php
 <?php
-// app/controllers/PaypalController.php
+// app/controllers/PaymentController.php
 
-cclass StripeController extends BaseController
+use Payum\LaravelPackage\Controller\PayumController;
+
+cclass PaymentController extends PayumController
+{
+ 	public function preparePayment()
+ 	{
+         $storage = $this->getPayum()->getStorage('Payum\Core\Model\Payment');
+
+         $payment = $storage->create();
+         $payment->setNumber(uniqid());
+         $payment->setCurrencyCode('EUR');
+         $payment->setTotalAmount(123); // 1.23 EUR
+         $payment->setDescription('A description');
+         $payment->setClientId('anId');
+         $payment->setClientEmail('foo@example.com');
+         $payment->setDetails(array(
+           // put here any fields in a gateway format.
+           // for example if you use Paypal ExpressCheckout you can define a description of the first item:
+           // 'L_PAYMENTREQUEST_0_DESC0' => 'A desc',
+         ));
+         $storage->update($payment);
+
+         $captureToken = $payum->getTokenFactory()->createCaptureToken('offline', $payment, 'payment_done');
+
+         return \Redirect::to($captureToken->getTargetUrl());
+ 	}
+}
+```
+
+## Stripe.Js
+
+* Configuration
+
+```bash
+$ php composer.phar require payum/payum-laravel-package stripe/stripe-php payum/stripe
+```
+
+```php
+// bootstrap/start.php
+
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->addGateway('stripe_js', [
+            'factory' => 'stripe_js',
+            'publishable_key' => 'EDIT ME',
+            'secret_key' => 'EDIT ME',
+         ])
+    ;
+});
+```
+
+* Prepare payment
+
+```php
+<?php
+// app/controllers/StripeController.php
+
+use Payum\LaravelPackage\Controller\PayumController;
+
+cclass StripeController extends PayumController
 {
  	public function prepareJs()
  	{
-         $storage = \App::make('payum')->getStorage('Payum\Core\Model\ArrayObject');
+         $storage = $this->getPayum()->getStorage('Payum\Core\Model\ArrayObject');
  
          $details = $storage->create();
          $details['amount'] = '100';
@@ -57,7 +99,7 @@ cclass StripeController extends BaseController
          $details['description'] = 'a desc';
          $storage->update($details);
  
-         $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('stripe_js', $details, 'payment_done');
+         $captureToken = $this->getPayum()->getTokenFactory()->createCaptureToken('stripe_js', $details, 'payment_done');
  
          return \Redirect::to($captureToken->getTargetUrl());
  	}
@@ -70,46 +112,35 @@ cclass StripeController extends BaseController
 
 ```bash
 $ php composer.phar require payum/stripe payum/payum-laravel-package stripe/stripe-php
-$ php artisan config:publish payum/payum-laravel-package
 ```
 
 ```php
-// app/config/packages/payum/payum-laravel-package/config.php
+// bootstrap/start.php
 
-use Payum\LaravelPackage\Action\GetHttpRequestAction;
-use Payum\Core\Storage\FilesystemStorage;
-
-$detailsClass = 'Payum\Core\Model\ArrayObject';
-$tokenClass = 'Payum\Core\Model\Token';
-
-$stripeCheckoutGatewayFactory = new \Payum\Stripe\StripeCheckoutGatewayFactory();
-
-return array(
-    'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'gateways' => array(
-        'stripe_checkout' => $stripeCheckoutGatewayFactory->create(array(
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->addGateway('stripe_checkout', [
+            'factory' => 'stripe_checkout',
             'publishable_key' => 'EDIT ME',
             'secret_key' => 'EDIT ME',
-            'payum.action.get_http_request' => new GetHttpRequestAction(),
-        )),
-    ),
-    'storages' => array(
-        $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
-    )
-);
+         ])
+    ;
+});
 ```
 
 * Prepare payment
 
 ```php
 <?php
-// app/controllers/PaypalController.php
+// app/controllers/StripeController.php
 
-cclass StripeController extends BaseController
+use Payum\LaravelPackage\Controller\PayumController;
+
+cclass StripeController extends PayumController
 {
  	public function prepareCheckout()
  	{
-         $storage = \App::make('payum')->getStorage('Payum\Core\Model\ArrayObject');
+         $storage = $this->getPayum()->getStorage('Payum\Core\Model\ArrayObject');
  
          $details = $storage->create();
          $details['amount'] = '100';
@@ -117,7 +148,7 @@ cclass StripeController extends BaseController
          $details['description'] = 'a desc';
          $storage->update($details);
  
-         $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('stripe_checkout', $details, 'payment_done');
+         $captureToken = $this->getPayum()->getTokenFactory()->createCaptureToken('stripe_checkout', $details, 'payment_done');
  
          return \Redirect::to($captureToken->getTargetUrl());
  	}
@@ -130,56 +161,45 @@ cclass StripeController extends BaseController
 
 ```bash
 $ php composer.phar require payum/omnipay-bridge payum/payum-laravel-package omnipay/stripe
-$ php artisan config:publish payum/payum-laravel-package
 ```
 
 ```php
-// app/config/packages/payum/payum-laravel-package/config.php
+// bootstrap/start.php
 
-use Payum\LaravelPackage\Action\GetHttpRequestAction;
-use Payum\Core\Storage\FilesystemStorage;
-
-$detailsClass = 'Payum\Core\Model\ArrayObject';
-$tokenClass = 'Payum\Core\Model\Token';
-
-$omnipayDirectGatewayFactory = new \Payum\OmnipayBridge\OmnipayDirectGatewayFactory();
-
-return array(
-    'token_storage' => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $tokenClass, 'hash'),
-    'gateways' => array(
-        'stripe_direct' => $omnipayDirectGatewayFactory->create(array(
+App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+    $payumBuilder
+        ->addGateway('stripe_direct', [
+            'factory' => 'omnipay_direct',
             'type' => 'Stripe',
             'options' => array(
                 'apiKey' => 'EDIT ME',
                 'testMode' => true,
             ),
-            'payum.action.obtain_credit_card' => new ObtainCreditCardAction,
-        )),
-    ),
-    'storages' => array(
-        $detailsClass => new FilesystemStorage(__DIR__.'/../../../../storage/payments', $detailsClass),
-    )
-);
+         ])
+    ;
+});
 ```
 
 * Prepare payment
 
 ```php
 <?php
-// app/controllers/PaypalController.php
+// app/controllers/OmnipayController.php
 
-cclass StripeController extends BaseController
+use Payum\LaravelPackage\Controller\PayumController;
+
+cclass OmnipayController extends PayumController
 {
  	public function prepareDirect()
  	{
-         $storage = \App::make('payum')->getStorage('Payum\Core\Model\ArrayObject');
+         $storage = $this->getPayum()->getStorage('Payum\Core\Model\ArrayObject');
  
          $details = $storage->create();
          $details['amount'] = '10.00';
          $details['currency'] = 'USD';
          $storage->update($details);
  
-         $captureToken = \App::make('payum.security.token_factory')->createCaptureToken('stripe_direct', $details, 'payment_done');
+         $captureToken = $this->getPayum()->getTokenFactory()->createCaptureToken('stripe_direct', $details, 'payment_done');
  
          return \Redirect::to($captureToken->getTargetUrl());
  	}
