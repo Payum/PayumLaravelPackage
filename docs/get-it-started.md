@@ -17,8 +17,20 @@ Now you have all codes prepared and ready to be used.
 
 ## Configuration
 
+Register provider:
+
 ```php
-// bootstrap/start.php
+<?php
+// app/config/app.php
+
+return array(
+    'providers' => array(
+        'Payum\LaravelPackage\PayumServiceProvider',
+    ),
+);
+```php
+
+// bootstrap/start.php or other place where you can usee App::resolving method.
 
 App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
     $payumBuilder
