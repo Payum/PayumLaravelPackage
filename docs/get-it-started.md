@@ -28,6 +28,10 @@ return array(
         'Payum\LaravelPackage\PayumServiceProvider',
     ),
 );
+```
+
+Configure builder. You are free to use other builder's methods.
+
 ```php
 
 // bootstrap/start.php or other place where you can usee App::resolving method.
