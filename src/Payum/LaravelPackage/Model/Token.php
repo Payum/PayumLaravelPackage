@@ -16,6 +16,11 @@ class Token extends Model implements TokenInterface
      * @var string
      */
     protected $primaryKey = 'hash';
+    
+    /**
+     * @var bool
+     */
+    public $incrementing = false;
 
     /**
      * @var bool
