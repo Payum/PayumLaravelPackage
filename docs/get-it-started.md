@@ -1,6 +1,6 @@
 # Get it started.
 
-In this chapter we are going to setup payum package and do simple purchase using paypal express checkout. 
+In this chapter we are going to setup payum package and do simple purchase using paypal express checkout.
 Look at sandbox to find more examples.
 
 ## Installation
@@ -32,9 +32,9 @@ return array(
 
 Configure builder. You are free to use other builder's methods.
 
-```php
+In Laravel 4, add the following to bootstrap/start.php or other place where you can use App::resolving method.
 
-// bootstrap/start.php or other place where you can usee App::resolving method.
+```php
 
 App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
     $payumBuilder
@@ -51,6 +51,30 @@ App::resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder)
         ])
     ;
 });
+```
+
+In Laravel 5, create new service provider or add to the default app/Providers/AppServiceProvider.php register method:
+
+```php
+...
+public function register()
+{
+    $this->app->resolving('payum.builder', function(\Payum\Core\PayumBuilder $payumBuilder) {
+        $payumBuilder
+        // this method registers filesystem storages, consider to change them to something more
+        // sophisticated, like eloquent storage
+        ->addDefaultStorages()
+
+        ->addGateway('paypal_ec', [
+            'factory' => 'paypal_express_checkout',
+            'username' => 'EDIT ME',
+            'password' => 'EDIT ME',
+            'signature' => 'EDIT ME',
+            'sandbox' => true
+        ]);
+    });
+}
+...
 ```
 
 ## Prepare payment
@@ -81,7 +105,7 @@ class PaypalController extends PayumController
 }
 ```
 
-Here's you may want to modify a `payment_done` route. 
+Here's you may want to modify a `payment_done` route.
 It is a controller where the payer will be redirected after the payment is done, whenever it is success failed or pending.
 Read a [dedicated chapter](payment_done_controller.md) about how the payment done controller may look like.
 
