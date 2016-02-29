@@ -35,10 +35,10 @@
     ],
     "require": {
         "php": ">=5.5.0",
-        "illuminate/container": "~4.0|~5.1",
-        "illuminate/routing": "~4.0|~5.1",
-        "illuminate/support": "~4.0|~5.1",
-        "payum/core": "1.0.*@dev"
+        "illuminate/container": "^4|^5.1",
+        "illuminate/routing": "^4|^5.1",
+        "illuminate/support": "^4|^5.1",
+        "payum/core": "^1"
     },
     "suggest": {
         "payum/paypal-express-checkout-nvp": "If you want to use paypal express checkout nvp gateway",
