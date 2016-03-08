@@ -1,35 +1,30 @@
-# Payment done controller
+# Templating
 
-First we have to validate the request. 
-If it is valid the verifier returns a token. 
-We can use it later to get payment status, details and any other information. 
+Some gateways require authorizations in one way or another. Some of these are to be included as a javascript
+or iframe or anything else on your page. By default, payum solves this with twix templates. With Laravel
+we are used to work with blade, and the laravel-package includes a simple way to use blade templates
+with payum instead of the default twix.
+
+## Configuration
+
+All you have to do is change the configuration of payum on the gateway you want to apply the blade templating.
+This is a example of the klarna_checkout-gateway config. The important part for changing the templateing is
+`payum.action.render_template` and `payum.template.authorize`.
 
 ```php
 <?php
-
-use Payum\Core\Request\GetHumanStatus;
-use Payum\LaravelPackage\Controller\PayumController;
-use Symfony\Component\HttpFoundation\Request;
-
-class PaymentController extends PayumController
-{
-    public function done($payum_token)
-    {
-        /** @var Request $request */
-        $request = \App::make('request');
-        $request->attributes->set('payum_token', $payum_token);
-
-        $token = $this->getPayum()->getHttpRequestVerifier()->verify($request);
-        $gateway = $this->getPayum()->getGateway($token->getGatewayName());
-
-        $gateway->execute($status = new GetHumanStatus($token));
-
-        return \Response::json(array(
-            'status' => $status->getValue(),
-            'details' => iterator_to_array($status->getFirstModel())
-        ));
-    }
-}
+/** @var Payum $payum */
+$payum = (new PayumBuilder())
+    ->addDefaultStorages()
+    ->addGateway('aGateway', [
+        'factory' => 'klarna_checkout'
+        'merchant_id' => '',
+        'secret' => '',
+        'payum.action.render_template' => new \Payum\LaravelPackage\Action\RenderTemplateAction(), // Activates blade templating
+        'payum.template.authorize' => 'page.klarna-checkout-authorize', // Your custom blade-template
+    ])
+    ->getPayum()
+;
 ```
 
 Back to [index](index.md).
