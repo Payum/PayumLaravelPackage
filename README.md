@@ -1,5 +1,7 @@
 # Payum Laravel Bundle
 
+[![Join the chat at https://gitter.im/Payum/Payum](https://badges.gitter.im/Payum/Payum.svg)](https://gitter.im/Payum/Payum?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 The extension integrates [payum](http://payum.forma-dev.com/documentation#Payum) into [laravel](http://laravel.com/) framework.
 It already  supports [+35 gateways](https://github.com/Payum/Core/blob/master/Resources/docs/supported-gateways.md).
 Provide nice configuration layer, secured capture controller, storages and lots of other features.
