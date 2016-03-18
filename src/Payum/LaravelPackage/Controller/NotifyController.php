@@ -1,6 +1,7 @@
 <?php
 namespace Payum\LaravelPackage\Controller;
 
+use Payum\Core\Reply\ReplyInterface;
 use Payum\Core\Request\Notify;
 use Symfony\Component\HttpFoundation\Request;
 
