@@ -124,12 +124,12 @@ class PayumServiceProvider extends ServiceProvider
             'uses' => 'Payum\LaravelPackage\Controller\RefundController@doAction'
         ));
 
-        $route->get('/payment/notify/{payum_token}', array(
+        $route->any('/payment/notify/{payum_token}', array(
             'as' => 'payum_notify_do',
             'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doAction'
         ));
 
-        $route->get('/payment/notify/unsafe/{gateway_name}', array(
+        $route->any('/payment/notify/unsafe/{gateway_name}', array(
             'as' => 'payum_notify_do_unsafe',
             'uses' => 'Payum\LaravelPackage\Controller\NotifyController@doUnsafeAction'
         ));
