@@ -8,7 +8,7 @@ Provide nice configuration layer, secured capture controller, storages and lots 
 
 ## Resources
 
-* [Documentation](http://payum.org/doc#PayumLaravelPackage)
+* [Documentation](https://github.com/Payum/Payum/blob/master/src/Payum/Core/Resources/docs/index.md#extensions)
 * [Sandbox](https://github.com/makasim/PayumLaravelBundleSandbox)
 * [Questions](http://stackoverflow.com/questions/tagged/payum)
 * [Issue Tracker](https://github.com/Payum/PayumLaravelBundle/issues)
