@@ -85,19 +85,19 @@ class PayumServiceProvider extends ServiceProvider
             return $builder;
         });
 
-        $this->app['payum'] = $this->app->share(function($app) {
+        $this->app->singleton('payum', function($app) {
             return $app['payum.builder']->getPayum();
         });
 
-        $this->app['payum.converter.reply_to_http_response'] = $this->app->share(function($app) {
+        $this->app->singleton('payum.converter.reply_to_http_response', function($app) {
             return new ReplyToSymfonyResponseConverter();
         });
 
-        $this->app['payum.action.get_http_request'] = $this->app->share(function($app) {
+        $this->app->singleton('payum.action.get_http_request', function($app) {
             return new GetHttpRequestAction();
         });
 
-        $this->app['payum.action.obtain_credit_card'] = $this->app->share(function($app) {
+        $this->app->singleton('payum.action.obtain_credit_card', function($app) {
             return new ObtainCreditCardAction();
         });
     }
