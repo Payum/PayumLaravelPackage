@@ -19,7 +19,7 @@ class Payment extends Model implements  PaymentInterface
      */
     public function setDetails($details)
     {
-        $this->setAttribute('details', json_encode($details ?: array()));
+        $this->setAttribute('details', json_encode($details ?: array(), JSON_PRESERVE_ZERO_FRACTION));
     }
 
     /**
